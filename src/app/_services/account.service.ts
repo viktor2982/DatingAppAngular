@@ -22,7 +22,6 @@ export class AccountService {
         map(
           (user: User) => {
             if ( user ) {
-              localStorage.setItem( 'user', JSON.stringify( user ));
               this.setCurrentUser( user );
             }
             // return user;
@@ -37,7 +36,6 @@ export class AccountService {
         map(
           (user: User) => {
             if ( user ) {
-              localStorage.setItem( 'user', JSON.stringify( user ));
               this.setCurrentUser( user );
             }
             // return user;
@@ -47,6 +45,7 @@ export class AccountService {
   }
 
   setCurrentUser( user: User ) {
+    localStorage.setItem( 'user', JSON.stringify( user ));
     this.currentUserSource.next( user );
   }
 
