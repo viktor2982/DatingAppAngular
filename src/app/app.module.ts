@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TimeagoModule } from 'ngx-timeago';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -54,6 +55,7 @@ import { DateInputComponent } from './_forms/date-input/date-input.component';
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
+    TimeagoModule.forRoot(),
     SharedModule,
   ],
   providers: [
