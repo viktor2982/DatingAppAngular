@@ -1,8 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from '@kolkov/ngx-gallery';
+import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
+import { ToastrService } from 'ngx-toastr';
 import { Member } from 'src/app/_models/member';
+import { Message } from 'src/app/_models/message';
 import { MembersService } from 'src/app/_services/members.service';
+import { MessageService } from 'src/app/_services/message.service';
 
 @Component({
   selector: 'app-member-detail',
@@ -11,14 +15,25 @@ import { MembersService } from 'src/app/_services/members.service';
 })
 export class MemberDetailComponent implements OnInit {
 
+  @ViewChild( 'memberTabs', { static: true } ) memberTabs: TabsetComponent;
+  activeTab: TabDirective;
   member: Member;
+  messages: Message[] = [];
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
 
-  constructor( private membersService: MembersService, private route: ActivatedRoute ) { }
+  constructor( private membersService: MembersService, private messageService: MessageService, private route: ActivatedRoute, private toastr: ToastrService ) { }
 
   ngOnInit(): void {
-    this.loadMember();
+    this.route.data
+      .subscribe(
+        data => this.member = data.member
+      );
+
+    this.route.queryParams
+      .subscribe(
+        params => params.tab ? this.selectTab( params.tab ) : this.selectTab( 0 )
+      );
 
     this.galleryOptions = [
       {
@@ -30,29 +45,50 @@ export class MemberDetailComponent implements OnInit {
         preview: false
       }
     ];
+
+    this.galleryImages = this.getPhotos();
   }
 
   getPhotos(): NgxGalleryImage[] {
     const imagesUrls = [];
 
-    for (const photo of this.member.photos) {
-      imagesUrls.push({
+    for ( const photo of this.member.photos ) {
+      imagesUrls.push( {
         small: photo?.url,
         medium: photo?.url,
         big: photo?.url
-      });
+      } );
     }
 
     return imagesUrls;
   }
 
-  loadMember() {
-    this.membersService.getMember(this.route.snapshot.paramMap.get( 'username' ))
+  loadMessages() {
+    this.messageService.getMessageThread( this.member.username )
       .subscribe(
-        member => {
-          this.member = member;
-          this.galleryImages = this.getPhotos();
+        messages => this.messages = messages
+      );
+  }
+
+  addLike() {
+    this.membersService.addLike( this.member.username )
+      .subscribe(
+        () => {
+          this.toastr.success( `You have liked ${ this.member.knownAs }` );
         }
       );
   }
+
+  selectTab( tabId: number ) {
+    this.memberTabs.tabs[ tabId ].active = true;
+  }
+
+  onTabActivated( tab: TabDirective ) {
+    this.activeTab = tab;
+
+    if ( this.activeTab.heading === 'Messages' && this.messages.length === 0 ) {
+      this.loadMessages();
+    }
+  }
+  
 }
