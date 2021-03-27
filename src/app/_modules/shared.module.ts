@@ -9,6 +9,7 @@ import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { FileUploadModule } from 'ng2-file-upload';
 import { PaginationModule } from "ngx-bootstrap/pagination";
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import { PaginationModule } from "ngx-bootstrap/pagination";
     BsDatepickerModule.forRoot(),
     PaginationModule.forRoot(),
     ButtonsModule.forRoot(),
+    ModalModule.forRoot(),
     NgxGalleryModule,
     NgxSpinnerModule,
     FileUploadModule,
@@ -34,6 +36,7 @@ import { PaginationModule } from "ngx-bootstrap/pagination";
     BsDatepickerModule,
     PaginationModule,
     ButtonsModule,
+    ModalModule,
     NgxGalleryModule,
     NgxSpinnerModule,
     FileUploadModule,
