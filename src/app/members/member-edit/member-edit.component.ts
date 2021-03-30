@@ -6,6 +6,7 @@ import { Member } from 'src/app/_models/member';
 import { User } from 'src/app/_models/User';
 import { AccountService } from 'src/app/_services/account.service';
 import { MembersService } from 'src/app/_services/members.service';
+import { PresenceService } from 'src/app/_services/presence.service';
 
 @Component({
   selector: 'app-member-edit',
@@ -24,7 +25,7 @@ export class MemberEditComponent implements OnInit {
     }
   }
 
-  constructor( private accountService: AccountService, private membersService: MembersService, private toastr: ToastrService ) {
+  constructor( private accountService: AccountService, private membersService: MembersService, private toastr: ToastrService, public presence: PresenceService ) {
     this.accountService.currentUser$
       .pipe(
         take( 1 )

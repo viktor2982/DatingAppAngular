@@ -5,6 +5,7 @@ import { Member } from 'src/app/_models/member';
 import { Photo } from 'src/app/_models/photo';
 import { User } from 'src/app/_models/User';
 import { AccountService } from 'src/app/_services/account.service';
+import { ConfirmService } from 'src/app/_services/confirm.service';
 import { MembersService } from 'src/app/_services/members.service';
 import { environment } from 'src/environments/environment';
 
@@ -21,7 +22,7 @@ export class PhotoEditorComponent implements OnInit {
   baseUrl = environment.apiUrl;
   user: User;
 
-  constructor( private accountService: AccountService, private membersService: MembersService ) {
+  constructor( private accountService: AccountService, private membersService: MembersService, private confirmService: ConfirmService ) {
     this.accountService.currentUser$
       .pipe(
         take( 1 )
@@ -53,10 +54,17 @@ export class PhotoEditorComponent implements OnInit {
   }
 
   deletePhoto( photo: Photo ) {
-    this.membersService.deletePhoto( photo.id )
+    this.confirmService.confirm( 'Confirm delete photo', 'This cannot be undone' )
       .subscribe(
-        () => {
-          this.member.photos = this.member.photos.filter( p => p.id !== photo.id );
+        result => {
+          if ( result ) {
+            this.membersService.deletePhoto( photo.id )
+              .subscribe(
+                () => {
+                  this.member.photos = this.member.photos.filter( p => p.id !== photo.id );
+                }
+              );
+          }
         }
       );
   }
